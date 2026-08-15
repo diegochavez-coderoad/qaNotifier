@@ -1,0 +1,630 @@
+[
+  {
+    "name": "farid hassan",
+    "email": "farid.hassan@example.com",
+    "slack_id": "U0FAKE0001",
+    "phone_number": "+1-555-0100",
+    "errors_found": 6,
+    "error_severity_level": 0,
+    "category": "light",
+    "errors": [
+      {
+        "id": "D-100039",
+        "status": "Passed",
+        "follow_up": 2,
+        "error_message": "No comments",
+        "fixed": false,
+        "date": "2026-07-06",
+        "reviewed_by": "Owen Clarke"
+      },
+      {
+        "id": "D-100016",
+        "status": "Passed",
+        "follow_up": 0,
+        "error_message": "No comments",
+        "fixed": false,
+        "date": "2026-07-13",
+        "reviewed_by": "Owen Clarke"
+      },
+      {
+        "id": "D-100021",
+        "status": "Passed",
+        "follow_up": 1,
+        "error_message": "No comments",
+        "fixed": false,
+        "date": "2026-07-18",
+        "reviewed_by": "Priya Shah"
+      },
+      {
+        "id": "D-100051",
+        "status": "Passed",
+        "follow_up": 0,
+        "error_message": "No comments",
+        "fixed": false,
+        "date": "2026-07-18",
+        "reviewed_by": "Priya Shah"
+      },
+      {
+        "id": "D-100056",
+        "status": "In progress",
+        "follow_up": 0,
+        "error_message": "No comments",
+        "fixed": false,
+        "date": "2026-07-23",
+        "reviewed_by": "Owen Clarke"
+      },
+      {
+        "id": "D-100035",
+        "status": "In progress",
+        "follow_up": 4,
+        "error_message": "No comments",
+        "fixed": false,
+        "date": "2026-07-02",
+        "reviewed_by": "Priya Shah"
+      }
+    ]
+  },
+  {
+    "name": "brian kim",
+    "email": "brian.kim@example.com",
+    "slack_id": "U0FAKE0001",
+    "phone_number": "+1-555-0100",
+    "errors_found": 14,
+    "error_severity_level": 130,
+    "category": "alert",
+    "errors": [
+      {
+        "id": "D-100052",
+        "status": "In progress",
+        "follow_up": 0,
+        "error_message": "No comments",
+        "fixed": false,
+        "date": "2026-07-19",
+        "reviewed_by": "Owen Clarke"
+      },
+      {
+        "id": "D-100011",
+        "status": "Opportunity",
+        "follow_up": 4,
+        "error_message": "D/M | Opportunity | Styling | Element overlaps the header on mobile",
+        "fixed": false,
+        "date": "2026-07-08",
+        "reviewed_by": "Owen Clarke"
+      },
+      {
+        "id": "D-100008",
+        "status": "Failed",
+        "follow_up": 2,
+        "error_message": "D/M | Failed | Config | Required tracking script missing",
+        "fixed": false,
+        "date": "2026-07-05",
+        "reviewed_by": "Owen Clarke"
+      },
+      {
+        "id": "D-100046",
+        "status": "Passed",
+        "follow_up": 1,
+        "error_message": "No comments",
+        "fixed": false,
+        "date": "2026-07-13",
+        "reviewed_by": "Owen Clarke"
+      },
+      {
+        "id": "D-100013",
+        "status": "Failed",
+        "follow_up": 2,
+        "error_message": "D/M | Failed | Config | Required tracking script missing",
+        "fixed": false,
+        "date": "2026-07-10",
+        "reviewed_by": "Priya Shah"
+      },
+      {
+        "id": "D-100042",
+        "status": "Opportunity",
+        "follow_up": 3,
+        "error_message": "M | Opportunity | Layout | Content block could be reordered",
+        "fixed": false,
+        "date": "2026-07-09",
+        "reviewed_by": "Owen Clarke"
+      },
+      {
+        "id": "D-100022",
+        "status": "Opportunity",
+        "follow_up": 3,
+        "error_message": "M | Opportunity | Layout | Content block could be reordered",
+        "fixed": false,
+        "date": "2026-07-19",
+        "reviewed_by": "Priya Shah"
+      },
+      {
+        "id": "D-100047",
+        "status": "In progress",
+        "follow_up": 3,
+        "error_message": "No comments",
+        "fixed": false,
+        "date": "2026-07-14",
+        "reviewed_by": "Owen Clarke"
+      },
+      {
+        "id": "D-100009",
+        "status": "Failed",
+        "follow_up": 0,
+        "error_message": "D/M | Failed | Link | Broken link in the footer",
+        "fixed": true,
+        "date": "2026-07-06",
+        "reviewed_by": "Priya Shah"
+      },
+      {
+        "id": "D-100045",
+        "status": "In progress",
+        "follow_up": 1,
+        "error_message": "No comments",
+        "fixed": false,
+        "date": "2026-07-12",
+        "reviewed_by": "Priya Shah"
+      },
+      {
+        "id": "D-100010",
+        "status": "Failed",
+        "follow_up": 4,
+        "error_message": "D/M | Failed | Link | Broken link in the footer",
+        "fixed": false,
+        "date": "2026-07-07",
+        "reviewed_by": "Owen Clarke"
+      },
+      {
+        "id": "D-100020",
+        "status": "In progress",
+        "follow_up": 3,
+        "error_message": "No comments",
+        "fixed": false,
+        "date": "2026-07-17",
+        "reviewed_by": "Priya Shah"
+      },
+      {
+        "id": "D-100053",
+        "status": "Opportunity",
+        "follow_up": 2,
+        "error_message": "M | Opportunity | Layout | Content block could be reordered",
+        "fixed": true,
+        "date": "2026-07-20",
+        "reviewed_by": "Owen Clarke"
+      },
+      {
+        "id": "D-100012",
+        "status": "Opportunity",
+        "follow_up": 2,
+        "error_message": "D/M | Opportunity | Styling | Element overlaps the header on mobile",
+        "fixed": true,
+        "date": "2026-07-09",
+        "reviewed_by": "Priya Shah"
+      }
+    ]
+  },
+  {
+    "name": "alice johnson",
+    "email": "alice.johnson@example.com",
+    "slack_id": "U0FAKE0001",
+    "phone_number": "+1-555-0100",
+    "errors_found": 11,
+    "error_severity_level": 309,
+    "category": "alert",
+    "errors": [
+      {
+        "id": "D-100005",
+        "status": "Critical",
+        "follow_up": 2,
+        "error_message": "D/M | Critical | Layout | Page fails to render on mobile",
+        "fixed": true,
+        "date": "2026-07-02",
+        "reviewed_by": "Owen Clarke"
+      },
+      {
+        "id": "D-100001",
+        "status": "Critical",
+        "follow_up": 2,
+        "error_message": "D/M | Critical | Content | Placeholder text left in production",
+        "fixed": false,
+        "date": "2026-06-28",
+        "reviewed_by": "Owen Clarke"
+      },
+      {
+        "id": "D-100004",
+        "status": "Critical",
+        "follow_up": 0,
+        "error_message": "D/M | Critical | Layout | Page fails to render on mobile",
+        "fixed": true,
+        "date": "2026-07-01",
+        "reviewed_by": "Owen Clarke"
+      },
+      {
+        "id": "D-100041",
+        "status": "Passed",
+        "follow_up": 2,
+        "error_message": "No comments",
+        "fixed": false,
+        "date": "2026-07-08",
+        "reviewed_by": "Priya Shah"
+      },
+      {
+        "id": "D-100006",
+        "status": "Critical",
+        "follow_up": 2,
+        "error_message": "D/M | Critical | Layout | Page fails to render on mobile",
+        "fixed": false,
+        "date": "2026-07-03",
+        "reviewed_by": "Priya Shah"
+      },
+      {
+        "id": "D-100023",
+        "status": "Failed",
+        "follow_up": 2,
+        "error_message": "D/M | Failed | Link | Broken link in the footer",
+        "fixed": true,
+        "date": "2026-07-20",
+        "reviewed_by": "Owen Clarke"
+      },
+      {
+        "id": "D-100028",
+        "status": "Passed",
+        "follow_up": 1,
+        "error_message": "No comments",
+        "fixed": false,
+        "date": "2026-07-25",
+        "reviewed_by": "Owen Clarke"
+      },
+      {
+        "id": "D-100007",
+        "status": "Critical",
+        "follow_up": 4,
+        "error_message": "D/M | Critical | Layout | Page fails to render on mobile",
+        "fixed": true,
+        "date": "2026-07-04",
+        "reviewed_by": "Priya Shah"
+      },
+      {
+        "id": "D-100036",
+        "status": "Opportunity",
+        "follow_up": 1,
+        "error_message": "M | Opportunity | Layout | Content block could be reordered",
+        "fixed": true,
+        "date": "2026-07-03",
+        "reviewed_by": "Owen Clarke"
+      },
+      {
+        "id": "D-100003",
+        "status": "Critical",
+        "follow_up": 1,
+        "error_message": "D/M | Critical | Layout | Page fails to render on mobile",
+        "fixed": false,
+        "date": "2026-06-30",
+        "reviewed_by": "Priya Shah"
+      },
+      {
+        "id": "D-100002",
+        "status": "Critical",
+        "follow_up": 3,
+        "error_message": "D/M | Critical | Content | Placeholder text left in production",
+        "fixed": false,
+        "date": "2026-06-29",
+        "reviewed_by": "Priya Shah"
+      }
+    ]
+  },
+  {
+    "name": "carla mendez",
+    "email": "carla.mendez@example.com",
+    "slack_id": "U0FAKE0001",
+    "phone_number": "+1-555-0100",
+    "errors_found": 3,
+    "error_severity_level": 0,
+    "category": "light",
+    "errors": [
+      {
+        "id": "D-100049",
+        "status": "Passed",
+        "follow_up": 2,
+        "error_message": "No comments",
+        "fixed": false,
+        "date": "2026-07-16",
+        "reviewed_by": "Priya Shah"
+      },
+      {
+        "id": "D-100025",
+        "status": "Passed",
+        "follow_up": 3,
+        "error_message": "No comments",
+        "fixed": false,
+        "date": "2026-07-22",
+        "reviewed_by": "Priya Shah"
+      },
+      {
+        "id": "D-100038",
+        "status": "Passed",
+        "follow_up": 0,
+        "error_message": "No comments",
+        "fixed": false,
+        "date": "2026-07-05",
+        "reviewed_by": "Priya Shah"
+      }
+    ]
+  },
+  {
+    "name": "derek osei",
+    "email": "derek.osei@example.com",
+    "slack_id": "U0FAKE0001",
+    "phone_number": "+1-555-0100",
+    "errors_found": 9,
+    "error_severity_level": 0,
+    "category": "light",
+    "errors": [
+      {
+        "id": "D-100043",
+        "status": "Passed",
+        "follow_up": 3,
+        "error_message": "No comments",
+        "fixed": false,
+        "date": "2026-07-10",
+        "reviewed_by": "Owen Clarke"
+      },
+      {
+        "id": "D-100050",
+        "status": "Passed",
+        "follow_up": 0,
+        "error_message": "No comments",
+        "fixed": false,
+        "date": "2026-07-17",
+        "reviewed_by": "Owen Clarke"
+      },
+      {
+        "id": "D-100034",
+        "status": "Passed",
+        "follow_up": 0,
+        "error_message": "No comments",
+        "fixed": false,
+        "date": "2026-07-01",
+        "reviewed_by": "Owen Clarke"
+      },
+      {
+        "id": "D-100014",
+        "status": "Passed",
+        "follow_up": 4,
+        "error_message": "No comments",
+        "fixed": false,
+        "date": "2026-07-11",
+        "reviewed_by": "Priya Shah"
+      },
+      {
+        "id": "D-100033",
+        "status": "Passed",
+        "follow_up": 4,
+        "error_message": "No comments",
+        "fixed": false,
+        "date": "2026-06-30",
+        "reviewed_by": "Owen Clarke"
+      },
+      {
+        "id": "D-100024",
+        "status": "Passed",
+        "follow_up": 4,
+        "error_message": "No comments",
+        "fixed": false,
+        "date": "2026-07-21",
+        "reviewed_by": "Owen Clarke"
+      },
+      {
+        "id": "D-100057",
+        "status": "Passed",
+        "follow_up": 3,
+        "error_message": "No comments",
+        "fixed": false,
+        "date": "2026-07-24",
+        "reviewed_by": "Owen Clarke"
+      },
+      {
+        "id": "D-100029",
+        "status": "In progress",
+        "follow_up": 0,
+        "error_message": "No comments",
+        "fixed": false,
+        "date": "2026-07-26",
+        "reviewed_by": "Priya Shah"
+      },
+      {
+        "id": "D-100026",
+        "status": "Passed",
+        "follow_up": 3,
+        "error_message": "No comments",
+        "fixed": false,
+        "date": "2026-07-23",
+        "reviewed_by": "Priya Shah"
+      }
+    ]
+  },
+  {
+    "name": "grace oconnor",
+    "email": "grace.oconnor@example.com",
+    "slack_id": "U0FAKE0001",
+    "phone_number": "+1-555-0100",
+    "errors_found": 4,
+    "error_severity_level": 45,
+    "category": "medium",
+    "errors": [
+      {
+        "id": "D-100059",
+        "status": "Opportunity",
+        "follow_up": 2,
+        "error_message": "D/M | Opportunity | Styling | Element overlaps the header on mobile",
+        "fixed": false,
+        "date": "2026-07-26",
+        "reviewed_by": "Owen Clarke"
+      },
+      {
+        "id": "D-100037",
+        "status": "Failed",
+        "follow_up": 1,
+        "error_message": "D/M | Failed | Config | Required tracking script missing",
+        "fixed": false,
+        "date": "2026-07-04",
+        "reviewed_by": "Owen Clarke"
+      },
+      {
+        "id": "D-100040",
+        "status": "Failed",
+        "follow_up": 3,
+        "error_message": "D/M | Failed | Config | Required tracking script missing",
+        "fixed": true,
+        "date": "2026-07-07",
+        "reviewed_by": "Priya Shah"
+      },
+      {
+        "id": "D-100030",
+        "status": "Passed",
+        "follow_up": 3,
+        "error_message": "No comments",
+        "fixed": false,
+        "date": "2026-06-27",
+        "reviewed_by": "Owen Clarke"
+      }
+    ]
+  },
+  {
+    "name": "hiro tanaka",
+    "email": "hiro.tanaka@example.com",
+    "slack_id": "U0FAKE0001",
+    "phone_number": "+1-555-0100",
+    "errors_found": 4,
+    "error_severity_level": 10,
+    "category": "light",
+    "errors": [
+      {
+        "id": "D-100054",
+        "status": "Passed",
+        "follow_up": 1,
+        "error_message": "No comments",
+        "fixed": false,
+        "date": "2026-07-21",
+        "reviewed_by": "Owen Clarke"
+      },
+      {
+        "id": "D-100031",
+        "status": "Passed",
+        "follow_up": 2,
+        "error_message": "No comments",
+        "fixed": false,
+        "date": "2026-06-28",
+        "reviewed_by": "Priya Shah"
+      },
+      {
+        "id": "D-100017",
+        "status": "Opportunity",
+        "follow_up": 2,
+        "error_message": "M | Opportunity | Layout | Content block could be reordered",
+        "fixed": false,
+        "date": "2026-07-14",
+        "reviewed_by": "Owen Clarke"
+      },
+      {
+        "id": "D-100015",
+        "status": "Passed",
+        "follow_up": 1,
+        "error_message": "No comments",
+        "fixed": false,
+        "date": "2026-07-12",
+        "reviewed_by": "Owen Clarke"
+      }
+    ]
+  },
+  {
+    "name": "elena petrova",
+    "email": "elena.petrova@example.com",
+    "slack_id": "U0FAKE0001",
+    "phone_number": "+1-555-0100",
+    "errors_found": 9,
+    "error_severity_level": 12,
+    "category": "light",
+    "errors": [
+      {
+        "id": "D-100032",
+        "status": "Passed",
+        "follow_up": 4,
+        "error_message": "No comments",
+        "fixed": false,
+        "date": "2026-06-29",
+        "reviewed_by": "Owen Clarke"
+      },
+      {
+        "id": "D-100058",
+        "status": "Passed",
+        "follow_up": 4,
+        "error_message": "No comments",
+        "fixed": false,
+        "date": "2026-07-25",
+        "reviewed_by": "Priya Shah"
+      },
+      {
+        "id": "D-100019",
+        "status": "Passed",
+        "follow_up": 2,
+        "error_message": "No comments",
+        "fixed": false,
+        "date": "2026-07-16",
+        "reviewed_by": "Priya Shah"
+      },
+      {
+        "id": "D-100060",
+        "status": "Opportunity",
+        "follow_up": 1,
+        "error_message": "D/M | Opportunity | Styling | Element overlaps the header on mobile",
+        "fixed": false,
+        "date": "2026-06-27",
+        "reviewed_by": "Owen Clarke"
+      },
+      {
+        "id": "D-100018",
+        "status": "Opportunity",
+        "follow_up": 1,
+        "error_message": "D/M | Opportunity | Styling | Element overlaps the header on mobile",
+        "fixed": true,
+        "date": "2026-07-15",
+        "reviewed_by": "Priya Shah"
+      },
+      {
+        "id": "D-100048",
+        "status": "Passed",
+        "follow_up": 2,
+        "error_message": "No comments",
+        "fixed": false,
+        "date": "2026-07-15",
+        "reviewed_by": "Priya Shah"
+      },
+      {
+        "id": "D-100055",
+        "status": "In progress",
+        "follow_up": 3,
+        "error_message": "No comments",
+        "fixed": false,
+        "date": "2026-07-22",
+        "reviewed_by": "Priya Shah"
+      },
+      {
+        "id": "D-100044",
+        "status": "Opportunity",
+        "follow_up": 1,
+        "error_message": "D/M | Opportunity | Styling | Element overlaps the header on mobile",
+        "fixed": true,
+        "date": "2026-07-11",
+        "reviewed_by": "Priya Shah"
+      },
+      {
+        "id": "D-100027",
+        "status": "Passed",
+        "follow_up": 3,
+        "error_message": "No comments",
+        "fixed": false,
+        "date": "2026-07-24",
+        "reviewed_by": "Priya Shah"
+      }
+    ]
+  }
+]

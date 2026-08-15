@@ -1,0 +1,424 @@
+{
+  "name": "qaNotifier",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1aYydxbJkxG0-qy_SN4uxGP0clMV9drAY",
+          "mode": "list",
+          "cachedResultName": "qaNotifier",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1aYydxbJkxG0-qy_SN4uxGP0clMV9drAY"
+        },
+        "event": "fileCreated",
+        "options": {
+          "fileType": "all"
+        }
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -80
+      ],
+      "id": "51aea357-739c-475c-a624-731628b00464",
+      "name": "Google Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "iPb1kTugI4A9BefT",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "e98ecd4c-8eff-44d2-9977-dafe56d6305c",
+              "leftValue": "={{$json.mimeType}}",
+              "rightValue": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        192,
+        -80
+      ],
+      "id": "1bcde82c-1b58-440c-8565-82bca4ee176d",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{$json.id}}"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        448,
+        -96
+      ],
+      "id": "e51eb269-b584-4cc1-a35e-8b5303fb7676",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "iPb1kTugI4A9BefT",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "headerRow": true
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        672,
+        -96
+      ],
+      "id": "c556fae6-7833-4036-a7ce-09bbbb413adb",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "FAKE_SLACK_ID = \"U0FAKE0001\"\nFAKE_PHONE_NUMBER = \"+1-555-0100\"\n\nSTATUS_POINTS = {\n    \"Opportunity\": 2,\n    \"Failed\": 5,\n    \"Critical\": 10,\n}\n\n\ndef follow_up_multiplier(follow_up):\n    if follow_up == 0:\n        return 1\n    if follow_up == 1:\n        return 2\n    return 5\n\n\ndef error_score(error_entry):\n    points = STATUS_POINTS.get(error_entry[\"status\"], 0)\n    return points * follow_up_multiplier(error_entry[\"follow_up\"])\n\n\ndef categorize(severity):\n    if severity > 50:\n        return \"alert\"\n    if severity >= 20:\n        return \"medium\"\n    return \"light\"\n\n\ndef parse_follow_up(value):\n    if value in (None, \"\"):\n        return 0\n    return int(value)\n\n\ndef excel_serial_to_date(serial):\n    # Pure-arithmetic Excel-serial -> Gregorian date, no imports (Howard Hinnant's\n    # civil_from_days algorithm) — n8n's Python task runner blocks all stdlib imports\n    # by default, including `datetime`.\n    unix_days = int(serial) - 25569\n    z = unix_days + 719468\n    era = z // 146097\n    doe = z - era * 146097\n    yoe = (doe - doe // 1460 + doe // 36524 - doe // 146096) // 365\n    y = yoe + era * 400\n    doy = doe - (365 * yoe + yoe // 4 - yoe // 100)\n    mp = (5 * doy + 2) // 153\n    d = doy - (153 * mp + 2) // 5 + 1\n    m = mp + 3 if mp < 10 else mp - 9\n    y = y + 1 if m <= 2 else y\n    return f\"{y:04d}-{m:02d}-{d:02d}\"\n\n\ndef format_date(value):\n    if value in (None, \"\"):\n        return None\n    return excel_serial_to_date(value)\n\n\ngroups = {}\nemails = {}\nfor item in _items:\n    row = item[\"json\"]\n    name_value = row.get(\"Name\")\n    if not name_value:\n        continue\n\n    display_name = name_value.split(\"@\")[0].replace(\".\", \" \").strip()\n    emails.setdefault(display_name, name_value)\n    fix_comment = row.get(\"QA Fix Comment\") or \"\"\n\n    error_entry = {\n        \"id\": row.get(\"ID / Task / Case Number\", \"\"),\n        \"status\": row.get(\"QA Status\", \"\"),\n        \"follow_up\": parse_follow_up(row.get(\"Follow Up Count\")),\n        \"error_message\": row.get(\"QA Comment\") or \"No comments\",\n        \"fixed\": \"fixed\" in fix_comment.lower(),\n        \"date\": format_date(row.get(\"Date\")),\n        \"reviewed_by\": row.get(\"QA Completed by:\", \"\"),\n    }\n    groups.setdefault(display_name, []).append(error_entry)\n\nreport = []\nfor name, errors in groups.items():\n    severity = sum(error_score(e) for e in errors)\n    report.append({\"json\": {\n        \"name\": name,\n        \"email\": emails[name],\n        \"slack_id\": FAKE_SLACK_ID,\n        \"phone_number\": FAKE_PHONE_NUMBER,\n        \"errors_found\": len(errors),\n        \"error_severity_level\": severity,\n        \"category\": categorize(severity),\n        \"errors\": errors,\n    }})\n\nreturn report\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        864,
+        -96
+      ],
+      "id": "a4da6016-7541-465d-99da-e81fb8068a55",
+      "name": "Categorize reviewees"
+    },
+    {
+      "parameters": {
+        "content": "Switch Logic:\n- option 0:  slack message for light \n- option 1:  warning email for medium\n- option 2: call for critical alerts",
+        "height": 128,
+        "width": 304
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1040,
+        112
+      ],
+      "typeVersion": 1,
+      "id": "84c70fd1-8b67-4fa4-b06a-83103b7d7b6d",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.category }}",
+                    "rightValue": "light",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "fcddfa1d-013a-4e5d-b243-26c846967abc"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "eb9d40c9-8e49-44aa-b163-64a88afa01c5",
+                    "leftValue": "=category {{ $json.category }}",
+                    "rightValue": "medium",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "dc9fbd9e-40dc-495b-bce6-ee6cd09826e2",
+                    "leftValue": "={{ $json.category }}",
+                    "rightValue": "alert",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        1136,
+        -112
+      ],
+      "id": "5688c0ba-31f3-4722-8081-1167bbf6a4ea",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "TERMINAL_STATUSES = {\"Passed\", \"Completed\"}\n\n# \"Pattern\" still has no reliable structured signal to derive it from (unlike \"Main issues\"\n# below) — left as a manual constant. Edit before each run until it's wired to a real input.\nPATTERN = \"Exclude copywritter content, Links with Error 404, Sitemap not enabled\"\nAT_RISK_NOTE = \"missing content and links\"\n\n\ndef join_names(names):\n    if not names:\n        return \"None\"\n    if len(names) == 1:\n        return names[0]\n    return \", \".join(names[:-1]) + \" & \" + names[-1]\n\n\n# _items here are the grouped per-person report from \"Categorize reviewees\"\n# (json_to_groups.py) — each person's `errors` list carries per-case fields\n# (status, error_message, fixed, date, reviewed_by), which is what this node reads.\npeople = [item[\"json\"] for item in _items]\nall_errors = [error for person in people for error in person.get(\"errors\", [])]\n\nreviewers = []\nseen_reviewers = set()\nfor error in all_errors:\n    reviewer = error.get(\"reviewed_by\")\n    if reviewer and reviewer not in seen_reviewers:\n        seen_reviewers.add(reviewer)\n        reviewers.append(reviewer)\n\ncritical_at_risk = [\n    error for error in all_errors\n    if error.get(\"status\") == \"Critical\" and not error.get(\"fixed\")\n]\npending = [error for error in all_errors if error.get(\"status\") not in TERMINAL_STATUSES]\n\ncritical_messages = [\n    error.get(\"error_message\", \"\") for error in all_errors\n    if error.get(\"status\") == \"Critical\" and error.get(\"error_message\") not in (None, \"\", \"No comments\")\n]\nmain_issues = \"; \".join(critical_messages) if critical_messages else \"No critical issues found\"\n\nat_risk_line = f\"At risk: {len(critical_at_risk)} Critical\"\nif AT_RISK_NOTE:\n    at_risk_line += f\": ({AT_RISK_NOTE})\"\n\nreport = \"\\n\".join([\n    f\"Reviewed: {join_names(reviewers)} / {len(all_errors)} cases\",\n    f\"Main issues: {main_issues}\",\n    # f\"Pattern: {PATTERN}\",\n    # at_risk_line,\n    f\"Queues: {len(pending)} Cases Pending\",\n])\n\nreturn [{\"json\": {\"report\": report}}]\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        -352
+      ],
+      "id": "ab06badd-25d6-4205-a156-fceaa2fc4cc7",
+      "name": "Get daily report"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1984,
+        -112
+      ],
+      "id": "73014df1-c1b7-4cee-9db7-13a7915a8fda",
+      "name": "Send a message",
+      "webhookId": "23c4f718-ef69-4410-9470-069d8f15c9ae"
+    },
+    {
+      "parameters": {
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.7,
+      "position": [
+        1280,
+        -352
+      ],
+      "id": "f9f46f3f-6455-4ec9-8bb5-fea814beb3f8",
+      "name": "Send Message to Team Lead",
+      "webhookId": "4764807a-cb72-452a-97ca-3e5ce44c00b6"
+    },
+    {
+      "parameters": {
+        "content": "@TODO: These two should be connected.",
+        "height": 80,
+        "width": 272
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1072,
+        -464
+      ],
+      "typeVersion": 1,
+      "id": "ef8d629c-eb29-4d51-8f89-dcc85f1bf907",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "Create a high-impact, vector/illustrative email header image sized 600x200 px (PNG) with a strong sense of urgency. Center the word \"WARNING\" in all caps, bold, and highly legible. Use a vivid red gradient background with high-contrast yellow or white text. Add a subtle triangular exclamation/alarm icon to the left of the word. Style: modern flat/vector, minimal diagonal accent stripes, slight drop shadow on the text for readability. Keep composition clean and readable at small widths. No logos, no faces, no photo realism, and avoid clutter. Leave safe margins so text won't be cropped.\n\nOptional negative prompt (Stable Diffusion):\nblurry, low-contrast, small-text, people, logos, watermark, photorealistic, cluttered\n\nSuggested node settings:\n\n- Size: 600x200 px\n- Format: PNG\n- Background: solid or gradient (red) with optional transparent-safe margin\n- Style: flat vector / illustrative\n\nNotes for n8n:\n\n- Save the generated image URL or base64 output as `image_url` for downstream use.\n- If your email sender requires attachments/CID, configure accordingly in the Email node."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.ollama",
+      "typeVersion": 1,
+      "position": [
+        1472,
+        -176
+      ],
+      "id": "341662f0-36f6-4e89-8fad-ca095ad456bb",
+      "name": "Get email header"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are an urgent-but-professional support/ops communicator writing to medium-tier users. Produce two outputs: `subject` and `body_html`.\n\nRequirements:\n\n1) `subject`: one short, urgent subject line (<= 8 words).\n2) `body_html`: an HTML-compatible body that begins with a top header image included separately. Start with a single-sentence lead that references the header (alt text: \"{{image_alt}}\").\n3) Include a 1-2 sentence summary explaining why immediate action is required.\n4) Render the `{{open_issues}}` input as a bullet list. For each issue, include these fields in a single list item:\n   - **ID / title** (bold)\n   - **Severity** (High/Medium/Low)\n   - **One-line description**\n   - **What to do**: one concise action, suggested owner, and estimated time to fix\n   - **Link** (clickable) if provided\n5) Add a prioritized \"Top 3 immediate actions\" section with actionable next steps.\n6) End with a polite closing and a single CTA: \"Please address these by {{due_date}} or reply to coordinate.\" Keep tone urgent but professional and avoid alarmist phrasing.\n\nFormatting rules:\n\n- Avoid complex CSS; inline styles for legibility are OK.\n- Ensure each issue entry is scannable (one short paragraph or a compact list item).\n\nVariables available to the prompt (replace or provide as n8n variables):\n\n- `{{recipient_name}}` — recipient display name\n- `{{due_date}}` — suggested due date string (e.g., \"48 hours\")\n- `{{image_alt}}` — alt text for the header image (e.g., \"WARNING — action required\")\n- `{{image_url}}` — URL to the header image from the image-generation step\n- `{{open_issues}}` — JSON array of issue objects with keys: id, title, severity, description, steps, link (optional), owner, suggested_due\n\nExample instruction to the LLM node (n8n content):\n\"Use the variables `open_issues`, `recipient_name`, `due_date`, `image_url`, and `image_alt`. Return a JSON object with `subject` and `body_html` fields. `body_html` should include an `<img src=... alt=...>` tag at the top referencing `image_url` and `image_alt`.\n\nReturn only valid JSON (no commentary).\""
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.ollama",
+      "typeVersion": 1,
+      "position": [
+        1472,
+        16
+      ],
+      "id": "a5d40f16-f068-4cdc-b0ba-19d1c327b30b",
+      "name": "Get email body"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Categorize reviewees",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Categorize reviewees": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get daily report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [],
+        []
+      ]
+    },
+    "Get daily report": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "305d13f3-3bd4-4b53-a09c-bd77c2e378f4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b6c255e9e5348b64fc76e31dec0acc9e280768cf3cd0fa0a11152668ab792e38"
+  },
+  "nodeGroups": [],
+  "id": "he64ovrkALg8aEKW",
+  "tags": []
+}

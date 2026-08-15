@@ -14,6 +14,11 @@ AI Powered QA Notifier & Feedback/Compliance Assistant
 - Download n8n: https://docs.n8n.io/deploy/host-n8n/install-options/one-line-setup
 - Setup Google Oauth Authentication in n8n: For that you can follow the instructions in this Youtube video https://www.youtube.com/watch?v=FBGtpWMTppw
 - An Ollama model configured in n8n, for the AI notification-content nodes
+- An ElevenLabs Auth Key
+- A Twilio account to get the following keys:
+  - Twilio Auth Token
+  - Twilio Secret Access
+  - Twilio Account SID
 
 ### Repo structure
 

@@ -25,7 +25,7 @@ AI Powered QA Notifier & Feedback/Compliance Assistant
 ```
 qaNotifier/
 ├── n8n/
-│   └── qaNotifier.json                   Exported n8n workflow — import this to get the whole
+│   └── extractData.json                   Exported n8n workflow — import this to get the whole
 │                                          Drive-watching + notification pipeline in one shot
 ├── scripts/
 │   ├── xlsx_to_json.py                   Standalone: .xlsx -> flat rows (JSON)
@@ -43,15 +43,16 @@ qaNotifier/
 └── README.md                             This file
 ```
 
-## n8n workflows: 
+## n8n workflows:
 
-**Import:** in n8n, Workflows → Import from File 
+**Import:** in n8n, Workflows → Import from File
 
 `n8n/extractData.json`: activates the workflow on excel uploads to a google drive folder called `qaNotifier`, this downloads the file, turns it into a json categorized by error level so that it is ready to send to either slack/gmail/voice call
 
 ## Scripts
 
 ### Utility Scripts
+
 - **`xlsx_to_json.py`** — parses a raw `.xlsx` (zip + XML, no dependencies) into a flat
   list of row objects, then groups them by person. Kept as a utility; n8n does not use it.
 - **`generate_sample_xlsx.py`** — writes a synthetic sample `.xlsx` by hand, so `samples/`

@@ -1,0 +1,837 @@
+{
+  "name": "Call Webhooks",
+  "nodes": [
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"to\":\"{{ $json.recipient_phone }}\",\n  \"from\":\"{{ $json.sender_phone }}\",\n  \"sms_message\":\"{{ $json.sms_message }}\"\n}\n ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        768,
+        320
+      ],
+      "id": "82f31852-8884-4d6a-a156-0161f291f313",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.twilio.com/2010-04-01/Accounts/YOUR_TWILIO_ACCOUNT_SID/Messages.json",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "twilioApi",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=To",
+              "value": "={{ $json.to }}"
+            },
+            {
+              "name": "From",
+              "value": "={{ $json.from }}"
+            },
+            {
+              "name": "Body",
+              "value": "={{ $json.sms_message }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        976,
+        320
+      ],
+      "id": "573b1247-311f-423e-84c4-edd23175b1d5",
+      "name": "HTTP Request",
+      "credentials": {
+        "twilioApi": {
+          "id": "O5kWYZpewvVW9LHp",
+          "name": "Twilio account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "3209IjCDApTmhwyx",
+          "mode": "list",
+          "cachedResultName": "Call SID proof",
+          "cachedResultUrl": "/projects/U2MEk01ABqxzEjKT/datatables/3209IjCDApTmhwyx"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "call_sid",
+              "keyValue": "={{$json.body.CallSid}}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        560,
+        320
+      ],
+      "id": "3d30d851-1e37-476f-a9c5-11fe3d073cc7",
+      "name": "Get Call register by SID"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "3209IjCDApTmhwyx",
+          "mode": "list",
+          "cachedResultName": "Call SID proof",
+          "cachedResultUrl": "/projects/U2MEk01ABqxzEjKT/datatables/3209IjCDApTmhwyx"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "call_sid",
+              "keyValue": "={{$json.body.CallSid}}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        560,
+        528
+      ],
+      "id": "120bd673-1a49-4a1c-9e76-7c7786ff978b",
+      "name": "Get Call register by SID1"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "twilio-call-status",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        112,
+        304
+      ],
+      "id": "44b67a8b-c40f-441d-8444-b53cd17d5f85",
+      "name": "Standard Twilio Phone Webhook",
+      "webhookId": "9e558ecc-9064-4e04-b723-ee9d8a91f4cf"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "twilio-amd-status",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        112,
+        512
+      ],
+      "id": "a4270845-189d-4c36-88ff-92842c3cfdfb",
+      "name": "AMD Twilio Phone Webhook",
+      "webhookId": "cfc4cb36-cebb-4c76-99e5-0963197e53e0"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "9f8b6e1e-9daf-473e-88a4-4e07dd851c28",
+              "leftValue": "={{ $json.body.AnsweredBy }}",
+              "rightValue": "human",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        336,
+        512
+      ],
+      "id": "0a00afd0-ac4e-447c-9857-85172151f8ae",
+      "name": "Answered by a Human"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "9f8b6e1e-9daf-473e-88a4-4e07dd851c28",
+              "leftValue": "={{ $json.body.CallStatus }}",
+              "rightValue": "completed",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        336,
+        304
+      ],
+      "id": "6259387a-45cb-4ad3-bfb8-e69f50592413",
+      "name": "Call was Completed"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"to\":\"{{ $json.recipient_phone }}\",\n  \"from\":\"{{ $json.sender_phone }}\",\n  \"sms_message\":\"{{ $json.sms_message }}\"\n}\n ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        768,
+        528
+      ],
+      "id": "097fac7a-d8bb-4c19-a193-88c70f6cb617",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.twilio.com/2010-04-01/Accounts/YOUR_TWILIO_ACCOUNT_SID/Messages.json",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "twilioApi",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=To",
+              "value": "={{ $json.to }}"
+            },
+            {
+              "name": "From",
+              "value": "={{ $json.from }}"
+            },
+            {
+              "name": "Body",
+              "value": "={{ $json.sms_message }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        976,
+        528
+      ],
+      "id": "f802bb99-7bd6-4f08-9bda-e533177366f0",
+      "name": "HTTP Request1",
+      "credentials": {
+        "twilioApi": {
+          "id": "O5kWYZpewvVW9LHp",
+          "name": "Twilio account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "elevenlabs-call-events",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        80,
+        720
+      ],
+      "id": "2d1debb4-3dad-4576-991c-f00fcbfcf17b",
+      "name": "ElevenLabs Post Call Webhook",
+      "webhookId": "0add7f51-b472-48e3-9ae6-7769062ebadd"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ba32a6dd-66e8-4314-bf1a-4d2c24d93aa3",
+              "name": "event_type",
+              "value": "={{ $json.body.type }}",
+              "type": "string"
+            },
+            {
+              "id": "9b37d33e-8c82-483e-a6c2-b41c82f8fbdb",
+              "name": "call_sid",
+              "value": "={{ $json.body.data.metadata.phone_call.call_sid }}",
+              "type": "string"
+            },
+            {
+              "id": "ef531a8f-3083-4768-a2d4-6c605b9346ff",
+              "name": "recipient_phone",
+              "value": "={{ $json.body.data.metadata.phone_call.external_number }}",
+              "type": "string"
+            },
+            {
+              "id": "5fe91951-99b4-4882-a4d7-d3ce10d0d2e6",
+              "name": "call_status",
+              "value": "={{ $json.body.data.status }}",
+              "type": "string"
+            },
+            {
+              "id": "0601c12d-2064-498c-890f-8aafb92393d7",
+              "name": "call_successful",
+              "value": "={{ $json.body.data.analysis.call_successful }}",
+              "type": "string"
+            },
+            {
+              "id": "750211ab-5b3d-4557-830a-091c7c934851",
+              "name": "voicemail_used",
+              "value": "={{$json.body.data.metadata.features_usage.voicemail_detection.used}}",
+              "type": "string"
+            },
+            {
+              "id": "e700bf2b-8a08-4ca9-86b0-481e90b242e2",
+              "name": "termination_reason",
+              "value": "={{ $json.body.data.metadata.termination_reason }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        304,
+        720
+      ],
+      "id": "1df3d87c-4945-450f-a5fa-3adc74713c8c",
+      "name": "Get data"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "3209IjCDApTmhwyx",
+          "mode": "list",
+          "cachedResultName": "Call SID proof",
+          "cachedResultUrl": "/projects/U2MEk01ABqxzEjKT/datatables/3209IjCDApTmhwyx"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "call_sid",
+              "keyValue": "={{ $json.call_sid }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        736,
+        704
+      ],
+      "id": "2c4f0b77-ac61-462f-be99-bf10a2286ecd",
+      "name": "Get Call register by SID2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.twilio.com/2010-04-01/Accounts/YOUR_TWILIO_ACCOUNT_SID/Messages.json",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "twilioApi",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=To",
+              "value": "={{ $json.to }}"
+            },
+            {
+              "name": "From",
+              "value": "={{ $json.from }}"
+            },
+            {
+              "name": "Body",
+              "value": "={{ $json.sms_message }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1104,
+        704
+      ],
+      "id": "83540401-6afb-40fd-8b00-1b84243f7741",
+      "name": "HTTP Request2",
+      "credentials": {
+        "twilioApi": {
+          "id": "O5kWYZpewvVW9LHp",
+          "name": "Twilio account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"to\":\"{{ $json.recipient_phone }}\",\n  \"from\":\"{{ $json.sender_phone }}\",\n  \"sms_message\":\"{{ $json.sms_message }}\"\n}\n ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        928,
+        704
+      ],
+      "id": "eca3cd02-d503-4609-98c1-28c776edde9d",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "jsCode": "const normalized = $json;\n\n// Read the complete original ElevenLabs webhook,\n// not only the normalized fields from \"Get data\"\nconst webhook = $('ElevenLabs Post Call Webhook').item.json;\n\nconst data = webhook.body?.data ?? {};\nconst metadata = data.metadata ?? {};\nconst transcript = Array.isArray(data.transcript)\n  ? data.transcript\n  : [];\n\n// Voicemail system-tool result\nconst voicemailUsed =\n  normalized.voicemail_used === true ||\n  normalized.voicemail_used === 'true' ||\n  metadata.features_usage?.voicemail_detection?.used === true;\n\n// Look for meaningful speech from the recipient\nconst meaningfulUserResponses = transcript.filter(entry => {\n  if (entry.role !== 'user') return false;\n\n  const message = String(entry.message ?? '').trim();\n\n  return (\n    message !== '' &&\n    message !== '...' &&\n    message !== '…' &&\n    message.toLowerCase() !== '[silence]'\n  );\n});\n\nconst humanResponded = meaningfulUserResponses.length > 0;\n\n// Find the reason supplied when end_call was invoked\nlet endCallReason = '';\n\nfor (const entry of transcript) {\n  for (const toolCall of entry.tool_calls ?? []) {\n    if (toolCall.tool_name !== 'end_call') continue;\n\n    try {\n      const args = JSON.parse(toolCall.params_as_json ?? '{}');\n      endCallReason = String(args.reason ?? '').trim();\n    } catch {\n      // Ignore malformed tool arguments\n    }\n  }\n}\n\nconst reasonLower = endCallReason.toLowerCase();\n\nconst noResponse =\n  reasonLower.includes('no response') ||\n  reasonLower.includes('did not respond') ||\n  reasonLower.includes('no answer') ||\n  reasonLower.includes('silence');\n\n// Require SMS fallback when:\n// 1. voicemail was explicitly detected, OR\n// 2. recipient never meaningfully responded and agent ended for no response\nconst needsSmsFallback =\n  voicemailUsed ||\n  (!humanResponded && noResponse);\n\nreturn [{\n  json: {\n    ...normalized,\n    delivery_evaluation: {\n      voicemail_used: voicemailUsed,\n      human_responded: humanResponded,\n      no_response: noResponse,\n      end_call_reason: endCallReason,\n      needs_sms_fallback: needsSmsFallback\n    }\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        752,
+        880
+      ],
+      "id": "425e8aab-5f48-4bdf-bb3c-3c8e7d986ff6",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "9f3cc747-4b95-400e-bf2f-e2aa36a01aa2",
+              "leftValue": "={{ $json.delivery_evaluation.needs_sms_fallback }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        896,
+        880
+      ],
+      "id": "d00ac389-db66-466e-9e34-8df1cd7d76f1",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "3209IjCDApTmhwyx",
+          "mode": "list",
+          "cachedResultName": "Call SID proof",
+          "cachedResultUrl": "/projects/U2MEk01ABqxzEjKT/datatables/3209IjCDApTmhwyx"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "call_sid",
+              "keyValue": "={{ $json.call_sid }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1120,
+        864
+      ],
+      "id": "074d2b64-ede3-4a64-b8e4-b06d34c3cb2e",
+      "name": "Get Call register by SID3"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.twilio.com/2010-04-01/Accounts/YOUR_TWILIO_ACCOUNT_SID/Messages.json",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "twilioApi",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=To",
+              "value": "={{ $json.to }}"
+            },
+            {
+              "name": "From",
+              "value": "={{ $json.from }}"
+            },
+            {
+              "name": "Body",
+              "value": "={{ $json.sms_message }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1488,
+        864
+      ],
+      "id": "9b1fcd36-ecc8-4589-980d-831e8161df6c",
+      "name": "HTTP Request3",
+      "credentials": {
+        "twilioApi": {
+          "id": "O5kWYZpewvVW9LHp",
+          "name": "Twilio account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"to\":\"{{ $json.recipient_phone }}\",\n  \"from\":\"{{ $json.sender_phone }}\",\n  \"sms_message\":\"{{ $json.sms_message }}\"\n}\n ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1312,
+        864
+      ],
+      "id": "6e146cf4-358d-4bbf-acca-089c6f4bc996",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.event_type }}",
+                    "rightValue": "call_initiation_failure",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "5c2a486b-25c4-4c71-98ab-5b18f1a3ddeb"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "199c910c-2ee1-4af9-bd21-6c1a73a73cb8",
+                    "leftValue": "={{ $json.event_type }}",
+                    "rightValue": "post_call_transcription",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        496,
+        720
+      ],
+      "id": "8dd18401-a700-4f31-ab74-355c2054e248",
+      "name": "Is post-call transcription?"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Call register by SID": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Standard Twilio Phone Webhook": {
+      "main": [
+        [
+          {
+            "node": "Call was Completed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AMD Twilio Phone Webhook": {
+      "main": [
+        [
+          {
+            "node": "Answered by a Human",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Answered by a Human": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Get Call register by SID1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call was Completed": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Get Call register by SID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Call register by SID1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ElevenLabs Post Call Webhook": {
+      "main": [
+        [
+          {
+            "node": "Get data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get data": {
+      "main": [
+        [
+          {
+            "node": "Is post-call transcription?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Call register by SID2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Call register by SID3": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Get Call register by SID3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is post-call transcription?": {
+      "main": [
+        [
+          {
+            "node": "Get Call register by SID2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "cbb6d63c-7a83-4f8e-9486-3ae54f099d92",
+  "meta": {
+    "instanceId": "37a5aef85bd61aed6d0f2887ea8ff311a8179ec1686551ef9b105b1ac4101e04"
+  },
+  "nodeGroups": [],
+  "id": "DH7do7AAmQfJXHrF",
+  "tags": []
+}
